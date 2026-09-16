@@ -585,6 +585,62 @@ button{font-family:inherit;}
 .field textarea.body-field{min-height:220px;}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 
+.rte-toolbar{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+  padding:8px;
+  border:1px solid var(--line);
+  border-radius:8px 8px 0 0;
+  background:var(--paper-card);
+}
+.rte-select{
+  font-family:var(--sans);
+  font-size:13px;
+  color:var(--ink);
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:6px 8px;
+  cursor:pointer;
+}
+.rte-btn{
+  all:unset;
+  cursor:pointer;
+  min-width:30px;
+  text-align:center;
+  font-size:13px;
+  padding:6px 9px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  background:var(--paper);
+  color:var(--ink-soft);
+}
+.rte-btn:hover{border-color:var(--accent);color:var(--accent);}
+.rte-sep{width:1px;height:20px;background:var(--line);margin:0 2px;}
+
+.rte-editor{
+  min-height:220px;
+  max-height:520px;
+  overflow-y:auto;
+  font-family:var(--serif-body);
+  font-size:15.5px;
+  line-height:1.6;
+  color:var(--ink);
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-top:none;
+  border-radius:0 0 8px 8px;
+  padding:12px 14px;
+}
+.rte-editor:focus{outline:2px solid var(--accent-soft);outline-offset:-2px;}
+.rte-editor p{margin:0 0 12px;}
+.rte-editor:empty::before{
+  content:"Escribe aquí el cuerpo de la publicación…";
+  color:var(--ink-faint);
+}
+
 .chip-picker{display:flex;flex-wrap:wrap;gap:8px;}
 .chip{
   border:1px solid var(--line);
