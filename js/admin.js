@@ -316,10 +316,10 @@ function openEditor(slug) {
   $("#editor-title").textContent = slug ? "Editar publicación" : "Nueva publicación";
   $("#post-title").value = p ? p.title : "";
   $("#post-subtitle").value = p ? p.subtitle || "" : "";
-  $("#post-author").value = p ? p.author : cache.settings.author || "Nicolás Winther";
+  $("#post-author").value = (p && p.author) || cache.settings.author || "Nicolás Winther";
   $("#post-date").value = p ? toLocalInputValue(p.date) : toLocalInputValue(new Date().toISOString());
   $("#post-summary").value = p ? p.summary || "" : "";
-  $("#post-body").value = p ? p.body || "" : "";
+  setBodyEditorContent(p);
   $("#post-bibliography").value = p ? p.bibliography || "" : "";
   $("#post-image-caption").value = p ? p.imageCaption || "" : "";
   $("#post-image-input").value = "";
@@ -340,6 +340,75 @@ function closeEditor() {
   editingSlug = null;
 }
 
+/* ---------------- editor de cuerpo con formato (fuente, negrita, cursiva,
+   subrayado, sangría) ----------------
+   El cuerpo se guarda como HTML (bodyFormat:"html"). Las publicaciones
+   creadas antes de este cambio guardaron el cuerpo como texto Markdown
+   plano (sin bodyFormat, o bodyFormat distinto de "html"): al abrirlas en
+   este editor las convertimos a HTML de una vez (con marked, si está
+   disponible) para que sigan editándose con la misma barra de herramientas. */
+
+function setBodyEditorContent(p) {
+  const editor = $("#post-body");
+  if (!p) {
+    editor.innerHTML = "";
+    return;
+  }
+  if (p.bodyFormat === "html") {
+    editor.innerHTML = p.body || "";
+  } else if (p.body) {
+    editor.innerHTML = window.marked ? marked.parse(p.body) : `<p>${escapeAdmin(p.body)}</p>`;
+  } else {
+    editor.innerHTML = "";
+  }
+}
+
+let savedBodySelection = null;
+
+function initBodyEditorToolbar() {
+  const editor = $("#post-body");
+
+  const saveSelection = () => {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount && editor.contains(sel.anchorNode)) {
+      savedBodySelection = sel.getRangeAt(0);
+    }
+  };
+  editor.addEventListener("keyup", saveSelection);
+  editor.addEventListener("mouseup", saveSelection);
+  editor.addEventListener("blur", saveSelection);
+
+  const restoreSelection = () => {
+    if (!savedBodySelection) return;
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(savedBodySelection);
+  };
+
+  $$("#post-body-toolbar .rte-btn").forEach((btn) => {
+    // evita que el botón le quite el foco/selección al editor antes del click
+    btn.addEventListener("mousedown", (e) => e.preventDefault());
+    btn.addEventListener("click", () => {
+      editor.focus();
+      document.execCommand(btn.dataset.cmd);
+    });
+  });
+
+  $("#rte-font").addEventListener("change", (e) => {
+    editor.focus();
+    restoreSelection();
+    document.execCommand("fontName", false, e.target.value);
+  });
+
+  $("#rte-indent").addEventListener("change", (e) => {
+    editor.focus();
+    restoreSelection();
+    const level = parseInt(e.target.value, 10) || 0;
+    for (let i = 0; i < 5; i++) document.execCommand("outdent");
+    for (let i = 0; i < level; i++) document.execCommand("indent");
+  });
+}
+
 function toLocalInputValue(iso) {
   const d = new Date(iso);
   const pad = (n) => String(n).padStart(2, "0");
@@ -356,6 +425,11 @@ $("#post-form").addEventListener("submit", async (e) => {
   const title = $("#post-title").value.trim();
   if (!title) {
     showStatus(statusEl, "El título es obligatorio.", "err");
+    return;
+  }
+  const bodyEditor = $("#post-body");
+  if (!bodyEditor.textContent.trim()) {
+    showStatus(statusEl, "El cuerpo del texto es obligatorio.", "err");
     return;
   }
 
@@ -389,7 +463,8 @@ $("#post-form").addEventListener("submit", async (e) => {
       image: imagePath,
       imageCaption: $("#post-image-caption").value.trim(),
       summary: $("#post-summary").value.trim(),
-      body: $("#post-body").value,
+      body: bodyEditor.innerHTML,
+      bodyFormat: "html",
       bibliography: $("#post-bibliography").value.trim(),
     };
 
@@ -426,4 +501,7 @@ function uniqueSlug(base) {
   return `${base}-${i}`;
 }
 
-document.addEventListener("DOMContentLoaded", initConfigGate);
+document.addEventListener("DOMContentLoaded", () => {
+  initConfigGate();
+  initBodyEditorToolbar();
+});
