@@ -346,6 +346,21 @@ function route() {
   window.scrollTo(0, 0);
 }
 
+function initMenuToggle() {
+  const btn = document.getElementById("menu-toggle");
+  const sidebar = document.getElementById("sidebar");
+  if (!btn || !sidebar) return;
+  btn.addEventListener("click", () => {
+    const isOpen = sidebar.classList.toggle("open");
+    btn.setAttribute("aria-expanded", String(isOpen));
+  });
+  // al navegar (elegir un tema/etiqueta, abrir una publicación) se cierra el desplegable
+  window.addEventListener("hashchange", () => {
+    sidebar.classList.remove("open");
+    btn.setAttribute("aria-expanded", "false");
+  });
+}
+
 async function init() {
   try {
     const [posts, taxonomy, settings] = await Promise.all([
@@ -361,6 +376,7 @@ async function init() {
   }
   renderSidebar();
   loadVisitCounter();
+  initMenuToggle();
   route();
   window.addEventListener("hashchange", route);
 }
