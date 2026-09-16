@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minima Moralia — Portafolio de escrituras y experiencias</title>
+<meta name="description" content="Ensayos, cuentos y poemas de Nicolás Winther.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%92%80%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <a href="#/" class="masthead-link">
+      <div class="masthead-title" id="site-title">MINIMA MORALIA</div>
+      <div class="masthead-subtitle" id="site-subtitle">Portafolio de escrituras y experiencias</div>
+    </a>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-block">
+        <h3>Acerca de mí</h3>
+        <p id="about-me-text"></p>
+      </div>
+
+      <div class="side-block">
+        <h3>Visitas</h3>
+        <div class="visits">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3.2"/></svg>
+          <strong id="visit-count">…</strong>
+        </div>
+      </div>
+
+      <div class="side-block" id="social-block">
+        <h3>Encuéntrame en</h3>
+        <div class="social-row" id="social-row"></div>
+      </div>
+
+      <div class="side-block">
+        <h3>Tema</h3>
+        <ul class="taxo-list" id="category-list"></ul>
+      </div>
+
+      <div class="side-block">
+        <h3>Etiquetas</h3>
+        <ul class="taxo-list" id="tag-list"></ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="admin.html">Panel de administración</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="main-inner" id="main-view"></div>
+    </main>
+  </div>
+
+  <script src="js/site.js"></script>
+</body>
+</html>

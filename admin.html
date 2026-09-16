@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minima Moralia — Administración</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%92%80%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ---------- puerta de configuración (primera vez / sin token guardado) ---------- -->
+  <div class="config-gate" id="config-gate">
+    <div class="panel">
+      <h2>Conectar con GitHub</h2>
+      <p class="admin-sub" style="margin-top:-8px;">
+        Esta configuración se guarda solo en este navegador. Necesitas un token
+        de acceso personal (fine-grained) con permiso de escritura sobre el
+        contenido de tu repositorio. El README del proyecto explica cómo crearlo.
+      </p>
+      <form id="config-form">
+        <div class="two-col">
+          <div class="field">
+            <label for="cfg-owner">Usuario de GitHub</label>
+            <input type="text" id="cfg-owner" placeholder="nwintherv" required>
+          </div>
+          <div class="field">
+            <label for="cfg-repo">Repositorio</label>
+            <input type="text" id="cfg-repo" placeholder="minima-moralia" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="cfg-branch">Rama</label>
+          <input type="text" id="cfg-branch" placeholder="main" value="main">
+        </div>
+        <div class="field">
+          <label for="cfg-token">Token de acceso personal</label>
+          <input type="password" id="cfg-token" placeholder="github_pat_..." required>
+          <p class="hint">Se guarda solo en este navegador (localStorage) y se usa únicamente para hablar con api.github.com.</p>
+        </div>
+        <button class="btn" type="submit">Conectar</button>
+        <div id="config-status" class="status-msg" hidden></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ---------- panel principal ---------- -->
+  <div class="admin-shell" id="dashboard" hidden>
+    <div class="admin-header">
+      <h1>Panel de Minima Moralia</h1>
+      <div style="display:flex;gap:14px;align-items:center;">
+        <a href="index.html">Ver el sitio</a>
+        <a href="#" id="change-config">Cambiar configuración</a>
+      </div>
+    </div>
+    <p class="admin-sub" id="repo-label"></p>
+
+    <!-- Publicaciones -->
+    <div class="panel">
+      <h2>Publicaciones</h2>
+      <div id="post-list"></div>
+      <div style="margin-top:16px;">
+        <button class="btn" id="open-new-post" type="button">+ Nueva publicación</button>
+      </div>
+      <div id="post-list-status" class="status-msg" hidden></div>
+    </div>
+
+    <!-- Editor (oculto hasta crear/editar) -->
+    <div class="panel" id="editor-panel" hidden>
+      <h2 id="editor-title">Nueva publicación</h2>
+      <form id="post-form">
+        <div class="field">
+          <label for="post-title">Título</label>
+          <input type="text" id="post-title" required>
+        </div>
+        <div class="field">
+          <label for="post-subtitle">Subtítulo</label>
+          <input type="text" id="post-subtitle">
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="post-author">Autor</label>
+            <input type="text" id="post-author">
+          </div>
+          <div class="field">
+            <label for="post-date">Fecha de publicación</label>
+            <input type="datetime-local" id="post-date">
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="post-category">Tema</label>
+            <select id="post-category"></select>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button type="button" class="chip-add" id="add-category-btn-inline" onclick="document.getElementById('add-category-btn').click()">+ agregar tema nuevo</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Etiquetas</label>
+          <div class="chip-picker" id="post-tags-picker"></div>
+          <button type="button" class="chip-add" style="margin-top:8px;" onclick="document.getElementById('add-tag-btn').click()">+ agregar etiqueta nueva</button>
+        </div>
+        <div class="field">
+          <label for="post-image-input">Imagen (opcional)</label>
+          <input type="file" id="post-image-input" accept="image/*">
+          <p class="hint" id="current-image-note"></p>
+        </div>
+        <div class="field">
+          <label for="post-image-caption">Referencia / crédito de la imagen</label>
+          <input type="text" id="post-image-caption">
+        </div>
+        <div class="field">
+          <label for="post-summary">Resumen (opcional, aparece en la tarjeta de la publicación)</label>
+          <textarea id="post-summary" rows="2"></textarea>
+        </div>
+        <div class="field">
+          <label for="post-body">Cuerpo del texto (admite Markdown)</label>
+          <textarea id="post-body" class="body-field" required></textarea>
+        </div>
+        <div class="field">
+          <label for="post-bibliography">Bibliografía / referencias (opcional)</label>
+          <textarea id="post-bibliography" rows="3"></textarea>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn" type="submit" id="post-save-btn">Guardar publicación</button>
+          <button class="btn secondary" type="button" id="cancel-editor">Cancelar</button>
+        </div>
+        <div id="editor-status" class="status-msg" hidden></div>
+      </form>
+    </div>
+
+    <!-- Temas y etiquetas -->
+    <div class="panel">
+      <h2>Temas y etiquetas</h2>
+      <div class="field">
+        <label>Temas</label>
+        <div class="chip-picker" id="cat-chip-list"></div>
+        <button type="button" class="chip-add" id="add-category-btn" style="margin-top:10px;">+ agregar tema</button>
+      </div>
+      <div class="field">
+        <label>Etiquetas</label>
+        <div class="chip-picker" id="tag-chip-list"></div>
+        <button type="button" class="chip-add" id="add-tag-btn" style="margin-top:10px;">+ agregar etiqueta</button>
+      </div>
+    </div>
+
+    <!-- Configuración del sitio -->
+    <div class="panel">
+      <h2>Configuración del sitio</h2>
+      <form id="settings-form">
+        <div class="two-col">
+          <div class="field">
+            <label for="set-title">Título del sitio</label>
+            <input type="text" id="set-title">
+          </div>
+          <div class="field">
+            <label for="set-subtitle">Subtítulo</label>
+            <input type="text" id="set-subtitle">
+          </div>
+        </div>
+        <div class="field">
+          <label for="set-author">Autor por defecto</label>
+          <input type="text" id="set-author">
+        </div>
+        <div class="field">
+          <label for="set-about">Acerca de mí</label>
+          <textarea id="set-about" rows="4"></textarea>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="set-tiktok">TikTok (URL)</label>
+            <input type="text" id="set-tiktok" placeholder="https://tiktok.com/@...">
+          </div>
+          <div class="field">
+            <label for="set-substack">Substack (URL)</label>
+            <input type="text" id="set-substack" placeholder="https://....substack.com">
+          </div>
+        </div>
+        <div class="field">
+          <label for="set-linkedin">LinkedIn (URL)</label>
+          <input type="text" id="set-linkedin" placeholder="https://linkedin.com/in/...">
+        </div>
+        <div class="field">
+          <label for="set-counter-ns">Identificador del contador de visitas</label>
+          <input type="text" id="set-counter-ns">
+          <p class="hint">Un texto único (sin espacios) que identifica tu sitio ante el servicio de contador. No lo cambies después de publicar o el conteo se reinicia.</p>
+        </div>
+        <button class="btn" type="submit">Guardar configuración</button>
+        <div id="settings-status" class="status-msg" hidden></div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/github-api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
