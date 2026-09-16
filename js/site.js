@@ -56,9 +56,6 @@ function engagementRowHTML(slug, { sticky } = {}) {
   return `
     <button class="${cls} ${liked ? "liked" : ""}" data-like="${escapeHtml(slug)}" aria-pressed="${liked}">
       ${ICONS.heart}<span class="like-count" data-like-count="${escapeHtml(slug)}">—</span>
-    </button>
-    <button class="eng-btn" data-share="${escapeHtml(slug)}">
-      ${ICONS.share}<span>Compartir</span>
     </button>`;
 }
 
@@ -76,29 +73,6 @@ function hydrateEngagement(scope) {
       const count = await counterAction(`post-${slug}-likes`, liked ? "down" : "up");
       setLiked(slug, !liked);
       if (countEl && count !== null) countEl.textContent = count;
-    });
-  });
-
-  scope.querySelectorAll("[data-share]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const slug = btn.dataset.share;
-      const post = state.posts.find((p) => p.slug === slug);
-      const url = location.href.split("#")[0] + "#/post/" + encodeURIComponent(slug);
-      const label = btn.querySelector("span:last-child");
-      const original = label ? label.textContent : "";
-      try {
-        if (navigator.share) {
-          await navigator.share({ title: post ? post.title : document.title, url });
-        } else {
-          await navigator.clipboard.writeText(url);
-          if (label) {
-            label.textContent = "Enlace copiado";
-            setTimeout(() => (label.textContent = original), 1600);
-          }
-        }
-      } catch (e) {
-        /* el visitante canceló el share nativo: no hacemos nada */
-      }
     });
   });
 }
@@ -217,9 +191,10 @@ function bumpPostViews(slug) {
 
 function postCardHTML(p) {
   const bg = p.image ? `<div class="card-bg" style="background-image:url('${escapeHtml(p.image)}')"></div>` : "";
+  const compact = !p.image && !p.subtitle && !p.summary;
   return `
   <div class="post-card-wrap">
-    <a class="post-card" href="#/post/${encodeURIComponent(p.slug)}">
+    <a class="post-card${compact ? " compact" : ""}" href="#/post/${encodeURIComponent(p.slug)}">
       ${bg}
       <div class="card-scrim"></div>
       <div class="card-content">
