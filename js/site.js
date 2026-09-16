@@ -192,6 +192,8 @@ function bumpPostViews(slug) {
 function excerptFromBody(body, maxLen = 160) {
   if (!body) return "";
   const plain = body
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
     .replace(/```[\s\S]*?```/g, " ")
     .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
     .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
@@ -279,7 +281,12 @@ function renderArticle(slug) {
     return;
   }
 
-  const bodyHtml = window.marked ? marked.parse(p.body || "") : `<p>${escapeHtml(p.body || "")}</p>`;
+  const bodyHtml =
+    p.bodyFormat === "html"
+      ? p.body || ""
+      : window.marked
+      ? marked.parse(p.body || "")
+      : `<p>${escapeHtml(p.body || "")}</p>`;
   const bibHtml = p.bibliography
     ? `<div class="bibliography"><h3>Referencias</h3><div class="body-text">${
         window.marked ? marked.parse(p.bibliography) : `<p>${escapeHtml(p.bibliography)}</p>`
