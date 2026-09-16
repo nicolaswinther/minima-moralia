@@ -59,6 +59,7 @@ button{font-family:inherit;}
   border-bottom:3px double var(--line);
 }
 .masthead-link{display:inline-block;}
+.menu-toggle{display:none;}
 .masthead-title{
   font-family:var(--serif-display);
   font-weight:700;
@@ -597,12 +598,14 @@ button{font-family:inherit;}
 }
 .rte-select{
   font-family:var(--sans);
-  font-size:13px;
+  font-size:12.5px;
   color:var(--ink);
   background:var(--paper);
   border:1px solid var(--line);
   border-radius:6px;
-  padding:6px 8px;
+  padding:6px 6px;
+  max-width:128px;
+  flex:0 0 auto;
   cursor:pointer;
 }
 .rte-btn{
@@ -724,29 +727,59 @@ button{font-family:inherit;}
 
 /* ---------- responsive ---------- */
 @media (max-width:860px){
-  .masthead{padding:34px 20px 24px;}
+  .masthead{padding:28px 60px 22px;position:relative;}
+  .menu-toggle{
+    display:flex;
+    align-items:center;justify-content:center;
+    position:absolute;
+    top:22px;right:16px;
+    width:38px;height:38px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:var(--paper-card);
+    color:var(--ink-soft);
+    cursor:pointer;
+    z-index:2;
+  }
+  .menu-toggle svg{width:19px;height:19px;}
   .shell{flex-direction:column;}
+  .main{order:0;}
+
+  /* la barra lateral se convierte en un desplegable, oculto por defecto */
   .sidebar{
+    display:none;
     order:0;
-    position:relative;
-    width:100%;
+    position:absolute;
+    top:0;left:0;right:0;
+    width:auto;
     flex:none;
     min-height:0;
-    flex-direction:row;
-    flex-wrap:wrap;
-    align-items:center;
-    gap:16px 24px;
+    max-height:80vh;
+    overflow-y:auto;
+    flex-direction:column;
+    align-items:stretch;
+    gap:20px;
     padding:20px 18px;
     border-left:none;
     border-right:none;
+    border-bottom:1px solid var(--line);
+    box-shadow:0 16px 30px rgba(0,0,0,.35);
+    z-index:15;
   }
-  .main{order:0;}
-  .side-block{flex:1 1 auto;}
+  .sidebar.open{display:flex;}
+  .side-block{flex:none;}
   .taxo-list{flex-direction:row;flex-wrap:wrap;gap:10px;}
   .taxo-list button{border:1px solid var(--line);border-radius:999px;padding:4px 10px;}
-  .sidebar-footer{flex:1 1 100%;margin-top:6px;}
+  .sidebar-footer{margin-top:0;}
   .main{padding:28px 16px 80px;}
-  .article{padding:26px 20px 32px;}
+  .article{padding:22px 18px 28px;}
+  .article h1{font-size:26px;}
+  .article .subtitle{font-size:16px;}
+  .article .body-text{font-size:15px;}
+  .article .body-text > p:first-of-type{font-size:16.5px;}
   .two-col{grid-template-columns:1fr;}
   .post-card:not(.auto-size),.post-card:not(.auto-size) .card-content{min-height:240px;}
+
+  .rte-toolbar{padding:6px;gap:5px;}
+  .rte-select{max-width:104px;font-size:12px;padding:6px 5px;}
 }
