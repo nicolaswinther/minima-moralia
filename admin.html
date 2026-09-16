@@ -118,22 +118,44 @@
         <div class="field">
           <label for="post-body">Cuerpo del texto</label>
           <div class="rte-toolbar" id="post-body-toolbar">
-            <select id="rte-font" class="rte-select" title="Fuente">
-              <option value="Georgia, 'Times New Roman', serif">Georgia</option>
-              <option value="'Times New Roman', Times, serif">Times New Roman</option>
-              <option value="Arial, Helvetica, sans-serif">Arial</option>
-            </select>
+            <div class="rte-dd" id="rte-font-dd">
+              <button type="button" class="rte-dd-toggle rte-dd-toggle-text" id="rte-font-toggle" title="Fuente">
+                <span id="rte-font-label">Georgia</span>
+                <svg class="rte-dd-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="rte-dd-menu" id="rte-font-menu" hidden>
+                <button type="button" class="rte-dd-item is-active" data-value="Georgia, 'Times New Roman', serif" style="font-family:Georgia, 'Times New Roman', serif;">Georgia</button>
+                <button type="button" class="rte-dd-item" data-value="'Times New Roman', Times, serif" style="font-family:'Times New Roman', Times, serif;">Times New Roman</button>
+                <button type="button" class="rte-dd-item" data-value="Arial, Helvetica, sans-serif" style="font-family:Arial, Helvetica, sans-serif;">Arial</button>
+                <button type="button" class="rte-dd-item" data-value="'Libre Baskerville', Georgia, serif" style="font-family:'Libre Baskerville', Georgia, serif;">Libre Baskerville</button>
+                <button type="button" class="rte-dd-item" data-value="'Special Elite', 'Courier New', monospace" style="font-family:'Special Elite', 'Courier New', monospace;">Máquina de escribir</button>
+              </div>
+            </div>
             <span class="rte-sep"></span>
             <button type="button" class="rte-btn" data-cmd="bold" title="Negrita"><b>N</b></button>
             <button type="button" class="rte-btn" data-cmd="italic" title="Cursiva"><i>C</i></button>
             <button type="button" class="rte-btn" data-cmd="underline" title="Subrayado"><u>S</u></button>
             <span class="rte-sep"></span>
-            <select id="rte-align" class="rte-select" title="Alineación">
-              <option value="justifyLeft">Izquierda</option>
-              <option value="justifyCenter">Centro</option>
-              <option value="justifyRight">Derecha</option>
-              <option value="justifyFull">Justificado</option>
-            </select>
+            <div class="rte-dd" id="rte-align-dd">
+              <button type="button" class="rte-dd-toggle rte-dd-toggle-icon" id="rte-align-toggle" title="Alineación">
+                <svg id="rte-align-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="10" x2="14" y2="10"/><line x1="4" y1="14" x2="18" y2="14"/><line x1="4" y1="18" x2="11" y2="18"/></svg>
+                <svg class="rte-dd-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="rte-dd-menu rte-dd-menu-row" id="rte-align-menu" hidden>
+                <button type="button" class="rte-dd-icon-item is-active" data-value="justifyLeft" title="Izquierda">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="10" x2="14" y2="10"/><line x1="4" y1="14" x2="18" y2="14"/><line x1="4" y1="18" x2="11" y2="18"/></svg>
+                </button>
+                <button type="button" class="rte-dd-icon-item" data-value="justifyCenter" title="Centro">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="10" x2="17" y2="10"/><line x1="5" y1="14" x2="19" y2="14"/><line x1="8" y1="18" x2="16" y2="18"/></svg>
+                </button>
+                <button type="button" class="rte-dd-icon-item" data-value="justifyRight" title="Derecha">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="10" y1="10" x2="20" y2="10"/><line x1="6" y1="14" x2="20" y2="14"/><line x1="13" y1="18" x2="20" y2="18"/></svg>
+                </button>
+                <button type="button" class="rte-dd-icon-item" data-value="justifyFull" title="Justificado">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="4" y1="14" x2="20" y2="14"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+                </button>
+              </div>
+            </div>
           </div>
           <div id="post-body" class="rte-editor" contenteditable="true" role="textbox" aria-multiline="true"></div>
           <p class="hint">Selecciona texto y usa la barra de arriba para cambiar la fuente, aplicar negrita, cursiva o subrayado, y elegir la alineación del párrafo.</p>
