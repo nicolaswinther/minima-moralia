@@ -1,3 +1,4 @@
+[README.md](https://github.com/user-attachments/files/32270173/README.md)
 # Minima Moralia
 
 Blog personal de Nicolás Winther. Sitio estático (GitHub Pages) con un panel de
@@ -78,8 +79,12 @@ Desde el panel puedes:
 
 - **Publicaciones**: crear, editar y eliminar ensayos, cuentos o poemas —
   título, subtítulo, autor, fecha, tema, etiquetas, imagen (se sube al
-  repositorio), referencia de la imagen, resumen, cuerpo (admite Markdown:
-  `## subtítulos`, `**negrita**`, `*cursiva*`, etc.) y bibliografía.
+  repositorio), referencia de la imagen, resumen, cuerpo y bibliografía. El
+  cuerpo se edita con una barra de herramientas (fuente, negrita, cursiva,
+  subrayado y sangría), igual que en un editor de texto normal: seleccionas
+  el texto y aplicas el formato. Las publicaciones que ya existían antes de
+  este cambio (escritas en Markdown) se siguen viendo igual en el sitio, y
+  al abrirlas en el panel se convierten automáticamente al nuevo editor.
 - **Temas y etiquetas**: agregar nuevos a medida que los necesites. Los que
   ya existen (Ensayos, Cuentos, Poemas / Estética, Crítica Cultural,
   Existencialismo, Ética, Eudaimonía, Antigüedad) son solo un punto de
