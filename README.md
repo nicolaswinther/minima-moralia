@@ -1,4 +1,4 @@
-[README.md](https://github.com/user-attachments/files/32270173/README.md)
+[README.md](https://github.com/user-attachments/files/32270418/README.md)
 # Minima Moralia
 
 Blog personal de Nicolás Winther. Sitio estático (GitHub Pages) con un panel de
@@ -81,8 +81,9 @@ Desde el panel puedes:
   título, subtítulo, autor, fecha, tema, etiquetas, imagen (se sube al
   repositorio), referencia de la imagen, resumen, cuerpo y bibliografía. El
   cuerpo se edita con una barra de herramientas (fuente, negrita, cursiva,
-  subrayado y sangría), igual que en un editor de texto normal: seleccionas
-  el texto y aplicas el formato. Las publicaciones que ya existían antes de
+  subrayado y alineación: izquierda, centro, derecha o justificado), igual
+  que en un editor de texto normal: seleccionas el texto y aplicas el
+  formato. Las publicaciones que ya existían antes de
   este cambio (escritas en Markdown) se siguen viendo igual en el sitio, y
   al abrirlas en el panel se convierten automáticamente al nuevo editor.
 - **Temas y etiquetas**: agregar nuevos a medida que los necesites. Los que
