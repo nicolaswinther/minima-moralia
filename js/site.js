@@ -189,12 +189,31 @@ function bumpPostViews(slug) {
   });
 }
 
+function excerptFromBody(body, maxLen = 160) {
+  if (!body) return "";
+  const plain = body
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/[#>*_`~]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!plain) return "";
+  if (plain.length <= maxLen) return plain;
+  const cut = plain.slice(0, maxLen);
+  const lastSpace = cut.lastIndexOf(" ");
+  return (lastSpace > 40 ? cut.slice(0, lastSpace) : cut).trim() + "…";
+}
+
 function postCardHTML(p) {
   const bg = p.image ? `<div class="card-bg" style="background-image:url('${escapeHtml(p.image)}')"></div>` : "";
-  const compact = !p.image && !p.subtitle && !p.summary;
+  // sin imagen: la tarjeta se ajusta a su contenido en vez de forzar una altura fija
+  const autoSize = !p.image;
+  const showExcerpt = !p.image && !p.subtitle && !p.summary;
+  const excerpt = showExcerpt ? excerptFromBody(p.body) : "";
   return `
   <div class="post-card-wrap">
-    <a class="post-card${compact ? " compact" : ""}" href="#/post/${encodeURIComponent(p.slug)}">
+    <a class="post-card${autoSize ? " auto-size" : ""}" href="#/post/${encodeURIComponent(p.slug)}">
       ${bg}
       <div class="card-scrim"></div>
       <div class="card-content">
@@ -206,6 +225,7 @@ function postCardHTML(p) {
           <h2>${escapeHtml(p.title || "Sin título")}</h2>
           ${p.subtitle ? `<p class="subtitle">${escapeHtml(p.subtitle)}</p>` : ""}
           ${p.summary ? `<p class="summary">${escapeHtml(p.summary)}</p>` : ""}
+          ${excerpt ? `<p class="summary">${escapeHtml(excerpt)}</p>` : ""}
           ${(p.tags && p.tags.length) ? `<div class="tag-row card-tag-row">${p.tags.map((t) => `<span class="tag-pill">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
         </div>
       </div>
