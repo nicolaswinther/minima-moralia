@@ -8,7 +8,7 @@ let editingSlug = null; // slug del post que se está editando (null = nuevo)
 let pendingImageFile = null;
 
 const $ = (sel) => document.querySelector(sel);
-const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 function showStatus(el, msg, type) {
   el.textContent = msg;
@@ -320,6 +320,7 @@ function openEditor(slug) {
   $("#post-date").value = p ? toLocalInputValue(p.date) : toLocalInputValue(new Date().toISOString());
   $("#post-summary").value = p ? p.summary || "" : "";
   setBodyEditorContent(p);
+  resetRteToolbarIndicators();
   $("#post-bibliography").value = p ? p.bibliography || "" : "";
   $("#post-image-caption").value = p ? p.imageCaption || "" : "";
   $("#post-image-input").value = "";
@@ -363,27 +364,50 @@ function setBodyEditorContent(p) {
   }
 }
 
-let savedBodySelection = null;
+const RTE_LEFT_ALIGN_ICON =
+  '<line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="10" x2="14" y2="10"/><line x1="4" y1="14" x2="18" y2="14"/><line x1="4" y1="18" x2="11" y2="18"/>';
+
+function resetRteToolbarIndicators() {
+  const fontLabel = $("#rte-font-label");
+  const alignIcon = $("#rte-align-icon");
+  if (fontLabel) fontLabel.textContent = "Georgia";
+  if (alignIcon) alignIcon.innerHTML = RTE_LEFT_ALIGN_ICON;
+  $$("#rte-font-menu .rte-dd-item").forEach((el, i) => el.classList.toggle("is-active", i === 0));
+  $$("#rte-align-menu .rte-dd-icon-item").forEach((el, i) => el.classList.toggle("is-active", i === 0));
+}
+
+function closeAllRteMenus() {
+  $$(".rte-dd-menu").forEach((menu) => (menu.hidden = true));
+}
+
+function initRteDropdown({ ddId, toggleId, menuId, itemSelector, onPick }) {
+  const dd = $(ddId);
+  const toggle = $(toggleId);
+  const menu = $(menuId);
+  if (!dd || !toggle || !menu) return;
+
+  // evita que el botón le quite el foco/selección al editor antes del click
+  toggle.addEventListener("mousedown", (e) => e.preventDefault());
+  toggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const willOpen = menu.hidden;
+    closeAllRteMenus();
+    menu.hidden = !willOpen;
+  });
+
+  $$(itemSelector, menu).forEach((item) => {
+    item.addEventListener("mousedown", (e) => e.preventDefault());
+    item.addEventListener("click", () => {
+      $$(itemSelector, menu).forEach((el) => el.classList.remove("is-active"));
+      item.classList.add("is-active");
+      menu.hidden = true;
+      onPick(item);
+    });
+  });
+}
 
 function initBodyEditorToolbar() {
   const editor = $("#post-body");
-
-  const saveSelection = () => {
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount && editor.contains(sel.anchorNode)) {
-      savedBodySelection = sel.getRangeAt(0);
-    }
-  };
-  editor.addEventListener("keyup", saveSelection);
-  editor.addEventListener("mouseup", saveSelection);
-  editor.addEventListener("blur", saveSelection);
-
-  const restoreSelection = () => {
-    if (!savedBodySelection) return;
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(savedBodySelection);
-  };
 
   $$("#post-body-toolbar .rte-btn").forEach((btn) => {
     // evita que el botón le quite el foco/selección al editor antes del click
@@ -394,16 +418,33 @@ function initBodyEditorToolbar() {
     });
   });
 
-  $("#rte-font").addEventListener("change", (e) => {
-    editor.focus();
-    restoreSelection();
-    document.execCommand("fontName", false, e.target.value);
+  initRteDropdown({
+    ddId: "#rte-font-dd",
+    toggleId: "#rte-font-toggle",
+    menuId: "#rte-font-menu",
+    itemSelector: ".rte-dd-item",
+    onPick: (item) => {
+      editor.focus();
+      $("#rte-font-label").textContent = item.textContent;
+      document.execCommand("fontName", false, item.dataset.value);
+    },
   });
 
-  $("#rte-align").addEventListener("change", (e) => {
-    editor.focus();
-    restoreSelection();
-    document.execCommand(e.target.value);
+  initRteDropdown({
+    ddId: "#rte-align-dd",
+    toggleId: "#rte-align-toggle",
+    menuId: "#rte-align-menu",
+    itemSelector: ".rte-dd-icon-item",
+    onPick: (item) => {
+      editor.focus();
+      $("#rte-align-icon").innerHTML = item.querySelector("svg").innerHTML;
+      document.execCommand(item.dataset.value);
+    },
+  });
+
+  // cerrar cualquier menú abierto al hacer clic fuera de la barra de herramientas
+  document.addEventListener("mousedown", (e) => {
+    if (!e.target.closest(".rte-dd")) closeAllRteMenus();
   });
 }
 
