@@ -400,12 +400,10 @@ function initBodyEditorToolbar() {
     document.execCommand("fontName", false, e.target.value);
   });
 
-  $("#rte-indent").addEventListener("change", (e) => {
+  $("#rte-align").addEventListener("change", (e) => {
     editor.focus();
     restoreSelection();
-    const level = parseInt(e.target.value, 10) || 0;
-    for (let i = 0; i < 5; i++) document.execCommand("outdent");
-    for (let i = 0; i < level; i++) document.execCommand("indent");
+    document.execCommand(e.target.value);
   });
 }
 
