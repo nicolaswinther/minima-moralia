@@ -143,13 +143,48 @@ $("#settings-form").addEventListener("submit", async (e) => {
 
 function renderTaxonomyPanel() {
   $("#cat-chip-list").innerHTML = cache.taxonomy.categories
-    .map((c) => `<span class="chip">${escapeAdmin(c)}</span>`)
+    .map(
+      (c) =>
+        `<span class="chip removable" data-kind="category" data-value="${escapeAdmin(c)}">${escapeAdmin(c)}<button type="button" class="chip-remove" aria-label="Eliminar tema">×</button></span>`
+    )
     .join("");
   $("#tag-chip-list").innerHTML = cache.taxonomy.tags
-    .map((t) => `<span class="chip">${escapeAdmin(t)}</span>`)
+    .map(
+      (t) =>
+        `<span class="chip removable" data-kind="tag" data-value="${escapeAdmin(t)}">${escapeAdmin(t)}<button type="button" class="chip-remove" aria-label="Eliminar etiqueta">×</button></span>`
+    )
     .join("");
   renderCategorySelect();
   renderTagChipPicker();
+  bindTaxonomyRemoveButtons();
+}
+
+function bindTaxonomyRemoveButtons() {
+  $$("#cat-chip-list .chip-remove, #tag-chip-list .chip-remove").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const chip = btn.closest(".chip");
+      const kind = chip.dataset.kind;
+      const value = chip.dataset.value;
+      const inUse = cache.posts.some((p) =>
+        kind === "category" ? p.category === value : (p.tags || []).includes(value)
+      );
+      const warn = inUse
+        ? " Ya hay publicaciones que la usan: no se les va a quitar automáticamente, pero dejará de aparecer como opción para publicaciones nuevas."
+        : "";
+      if (!confirm(`¿Eliminar "${value}"?${warn}`)) return;
+      if (kind === "category") {
+        cache.taxonomy.categories = cache.taxonomy.categories.filter((c) => c !== value);
+      } else {
+        cache.taxonomy.tags = cache.taxonomy.tags.filter((t) => t !== value);
+      }
+      try {
+        await persistTaxonomy();
+        renderTaxonomyPanel();
+      } catch (err) {
+        alert("Error al eliminar: " + err.message);
+      }
+    });
+  });
 }
 
 function escapeAdmin(str = "") {
