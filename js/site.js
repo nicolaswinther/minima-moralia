@@ -16,6 +16,7 @@ const ICONS = {
   heart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 8 1.9 4.7 5 3.9c2-.5 4 .3 5.2 2 .4.6.8 1.2.8 1.2s.4-.6.8-1.2c1.2-1.7 3.2-2.5 5.2-2 3.1.8 4.6 4.1 3 7.3-2.5 4.7-10 9.3-10 9.3Z"/></svg>`,
   share: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.6 15.7 6.4M8.3 13.4l7.4 4.2"/></svg>`,
   bookmark: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-4.2L6 21Z"/></svg>`,
+  star: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.8 5.9 21l1.4-6.8-5-4.7 6.8-.8Z"/></svg>`,
 };
 
 /* ---------------- interacciones reales (sin datos inventados) ----------------
@@ -168,6 +169,17 @@ function renderSidebar() {
   });
 }
 
+// pequeño gesto de diario antiguo: una "fecha de edición" en la barra
+// editorial, como el dateline de un periódico impreso
+function renderDateline() {
+  const el = document.getElementById("editorial-dateline");
+  if (!el) return;
+  const today = new Date().toLocaleDateString("es-CL", {
+    day: "numeric", month: "long", year: "numeric",
+  });
+  el.textContent = "Edición del " + today;
+}
+
 function loadVisitCounter() {
   const ns = (state.settings && state.settings.counterNamespace) || "minima-moralia";
   const el = document.getElementById("visit-count");
@@ -208,23 +220,19 @@ function excerptFromBody(body, maxLen = 160) {
 }
 
 function postCardHTML(p) {
-  const bg = p.image ? `<div class="card-bg" style="background-image:url('${escapeHtml(p.image)}')"></div>` : "";
+  const media = p.image
+    ? `<div class="card-media"><img src="${escapeHtml(p.image)}" alt="" loading="lazy"></div>`
+    : "";
   // sin imagen: la tarjeta se ajusta a su contenido en vez de forzar una altura fija
-  const autoSize = !p.image;
   const showExcerpt = !p.image && !p.subtitle && !p.summary;
   const excerpt = showExcerpt ? excerptFromBody(p.body) : "";
   return `
   <div class="post-card-wrap">
-    <a class="post-card${autoSize ? " auto-size" : ""}" href="#/post/${encodeURIComponent(p.slug)}">
-      ${bg}
-      <div class="card-scrim"></div>
+    <a class="post-card" href="#/post/${encodeURIComponent(p.slug)}">
+      ${media}
       <div class="card-content">
-        <div class="card-topline">
-          <span class="eyebrow-pill">${escapeHtml(p.category || "")}</span>
-          <span class="bookmark-icon">${ICONS.bookmark}</span>
-        </div>
         <div class="card-text">
-          <h2>${escapeHtml(p.title || "Sin título")}</h2>
+          <h2>${escapeHtml(p.title || "Sin título")}${p.category ? `<span class="eyebrow-pill">${escapeHtml(p.category)}</span>` : ""}</h2>
           ${p.subtitle ? `<p class="subtitle">${escapeHtml(p.subtitle)}</p>` : ""}
           ${p.summary ? `<p class="summary">${escapeHtml(p.summary)}</p>` : ""}
           ${excerpt ? `<p class="summary">${escapeHtml(excerpt)}</p>` : ""}
@@ -296,7 +304,7 @@ function renderArticle(slug) {
   main.innerHTML = `
     <a class="back-link" href="#/">&larr; Volver</a>
     <article class="article">
-      <div class="eyebrow">${escapeHtml(p.category || "")}</div>
+      <div class="eyebrow eyebrow-pill">${escapeHtml(p.category || "")}</div>
       <h1>${escapeHtml(p.title || "")}</h1>
       ${p.subtitle ? `<p class="subtitle">${escapeHtml(p.subtitle)}</p>` : ""}
       <div class="byline">
@@ -375,6 +383,7 @@ async function init() {
     console.error(e);
   }
   renderSidebar();
+  renderDateline();
   loadVisitCounter();
   initMenuToggle();
   route();
