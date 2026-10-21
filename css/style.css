@@ -310,6 +310,10 @@ button{font-family:inherit;}
   .post-card-wrap:nth-child(-n+3){border-top:none;}
   .post-card-wrap:not(:nth-child(3n+1)){border-left:1px solid var(--line-soft);}
 }
+@media (max-width:759.98px){
+  /* una sola columna: el mismo filete, pero horizontal entre publicaciones */
+  .post-card-wrap:not(:first-child){border-top:1px solid var(--line-soft);}
+}
 
 .post-card-wrap{
   display:flex;flex-direction:column;gap:10px;
