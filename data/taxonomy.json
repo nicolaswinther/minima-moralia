@@ -1,4 +1,14 @@
 {
-  "categories": ["Ensayos", "Cuentos", "Poemas"],
-  "tags": ["Estética", "Crítica Cultural", "Existencialismo", "Ética", "Eudaimonía", "Antigüedad"]
+  "categories": [
+    "Ensayos",
+    "Cuentos"
+  ],
+  "tags": [
+    "Estética",
+    "Crítica Cultural",
+    "Existencialismo",
+    "Ética",
+    "Eudaimonía",
+    "Antigüedad"
+  ]
 }
