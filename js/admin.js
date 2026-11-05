@@ -106,6 +106,7 @@ function renderSettingsForm() {
   $("#set-substack").value = (s.social && s.social.substack) || "";
   $("#set-linkedin").value = (s.social && s.social.linkedin) || "";
   $("#set-counter-ns").value = s.counterNamespace || "";
+  $("#set-copyright").value = s.copyright || "";
 }
 
 $("#settings-form").addEventListener("submit", async (e) => {
@@ -122,6 +123,7 @@ $("#settings-form").addEventListener("submit", async (e) => {
       linkedin: $("#set-linkedin").value.trim(),
     },
     counterNamespace: $("#set-counter-ns").value.trim() || "minima-moralia",
+    copyright: $("#set-copyright").value.trim(),
   };
   showStatus(statusEl, "Guardando…", "pending");
   try {
