@@ -140,6 +140,14 @@ function renderSidebar() {
   });
   socialBlock.hidden = !anySocial;
 
+  const copyrightEl = document.getElementById("copyright-text");
+  if (copyrightEl) {
+    const year = new Date().getFullYear();
+    copyrightEl.textContent =
+      (s.copyright && s.copyright.trim()) ||
+      `© ${year} ${s.author || "Nicolás Winther"}. Todos los derechos reservados.`;
+  }
+
   const catCounts = countBy(state.posts, "category");
   const tagCounts = countBy(state.posts, "tag");
 
